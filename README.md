@@ -10,7 +10,7 @@ The participant should understand the flash loan logic. Recognize that the contr
 
 To see solution, check out test [FlashLoan.t.sol](./test/flashloan/Loan.t.sol).
 
-
+Note: We could spice it up with a double loan. In flash loan function, we could require that the contract contains double amount of the flash loan. This could be achieved by creating a function that will be called by flash loan logic and send amount to Loan contract and then call flash loan function. It's important that new contract calls remove loan function so it can pay ouf it's flash loan.
 
 ### Task 4 - Metamorphic
 

