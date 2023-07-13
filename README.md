@@ -4,6 +4,12 @@ Repository for the Warroom ETHCC 2023. The goal of this project is to create fou
 
 ## Tasks
 
+### Task 2 - Signature malleability
+
+There is a contract [`WhitelistedRewards`](./src/signature/WhitelistedRewards.sol) that allows whitelisted users to withdraw rewards funds. The contract has one transaction that claimed rewards by providing the correct signature from a whitelisted address. The goal of this task is to recognize that you can provide different signature from the same address. The valid signature can be extracted by using a signature that already signed the transaction. Now the attacker can generate a new signature for the whitelisted address that signed the transaction. With a valid signature, the attacker can claim rewards from the contract. Check out test [WhitelistedRewards.t.sol](./test/signature/WhitelistedRewards.t.sol) for more details.
+
+For more info on this read section "Signature malleability" in [RareSkills blog](https://www.rareskills.io/post/smart-contract-security).
+
 ### Task 4 - Metamorphic
 
 The goal of this task is to see if the users can recognize that Multiply contract is deployed using Metamorphic factory. The user will see the verified contract on Etherscan of `Multiply.sol` contract and some funds on the contract. The idea is to trick the user to approve Multiply contract to spend their tokens for small multiplication of tokens he gets in return. After the user has approved tokens, we can destroy the current contract and deploy a new one with different logic, Multiply2.sol, but it will still have an allowance from the user. With new logic we can steal all allowed tokens from the user. Check out test [MultiplierRug.t.sol](./test/metamorphic/MultiplerRug.t.sol) for more details.
