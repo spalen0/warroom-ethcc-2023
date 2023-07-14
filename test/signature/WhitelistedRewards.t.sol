@@ -55,7 +55,6 @@ contract WhitelistedRewardsTest is Test {
         uint256 whitelistedAmount = amount / 2;
         bytes32 digest = keccak256(abi.encodePacked(whitelistedAmount));
         uint256 pk = 22;
-        address signer = vm.addr(pk);
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(pk, digest);
         address a = ecrecover(digest, v, r, s);
 
