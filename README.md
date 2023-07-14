@@ -6,11 +6,11 @@ Repository for the Warroom ETHCC 2023. The goal of this project is to create fou
 
 ### Task 1 - Flash loan
 
-The participant should understand the flash loan logic. Recognize that the contract is connect to Aave v3. Find on Aave v3 that he can mint him self some tokens so the contract can pay for the flash loan premium. There is function [`addUsingFlashLoan()`](./src/flashloan/Loan.sol#L33) in Loan contract that will increase totalLoan but not for the user but for the contract. The user should use flash loan function by him self and set Loan contract as receiver address to solve the task. Now user has enough totalLoan to withdraw reward token from the contract by calling function [`removeLoan`](./src/flashloan/Loan.sol#L37).
+The participant should understand the flash loan logic. Recognize that the contract is connected to Aave v3. Find on Aave v3 that he can mint for him self some tokens and send to the contract so it can execute successfully by paying the flash loan premium. The function [`addUsingFlashLoan()`](./src/flashloan/Loan.sol#L33) in Loan contract is added to misguide the user. It will increase totalLoan but not for the user as needed for task but instead to called Loan contract.
 
-To see solution, check out test [FlashLoan.t.sol](./test/flashloan/Loan.t.sol).
+The user should use flash loan function by him self and set Loan contract as receiver address to solve the task. Now user has enough totalLoan to withdraw reward token from the contract by calling function [`removeLoan`](./src/flashloan/Loan.sol#L37). In flash loan function, [there is require that the contract must contain double amount of the flash loan](./src/flashloan/Loan.sol#L47). This can be achieved by creating a contract that will take flash loan, send amount to Loan contract and then call again pool flash loan function and set Loan contract as receiver this time. It's important that new contract calls remove loan function so it can pay ouf it's flash loan.
 
-Note: We could spice it up with a double loan. In flash loan function, we could require that the contract contains double amount of the flash loan. This could be achieved by creating a function that will be called by flash loan logic and send amount to Loan contract and then call flash loan function. It's important that new contract calls remove loan function so it can pay ouf it's flash loan. Part of it is implement in [DoubleLoan.t.sol](./src/flashloan/DoubleLoan.sol) and [test flow](./test/flashloan/Loan.t.sol#L35).
+To see solution, check out test [FlashLoan.t.sol](./test/flashloan/Loan.t.sol). To successfully execute the attack, the user must create additional contract that will also call flash loan. This is done in [AttackLoan.sol](./test/flashloan/AttackLoan.sol).
 
 ### Task 4 - Metamorphic
 

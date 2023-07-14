@@ -30,8 +30,8 @@ contract Loan is IFlashLoanSimpleReceiver {
     }
 
     function removeLoan(address token, uint256 amount) external {
-        require(totalLoans[msg.sender] > 1e22, "loan too small");
-        totalLoans[msg.sender] -= amount;
+        require(totalLoans[msg.sender] > 1e23, "loan too small");
+        // totalLoans[msg.sender] -= amount;
         IERC20(token).transfer(msg.sender, amount);
     }
 
@@ -43,7 +43,8 @@ contract Loan is IFlashLoanSimpleReceiver {
         bytes calldata params
     ) external override returns (bool) {
         require(msg.sender == address(POOL), "!pool");
-        require(IERC20(asset).balanceOf(address(this)) > amount + premium, "!balanceFlash");
+        require(amount > 1e23);
+        require(IERC20(asset).balanceOf(address(this)) >= amount + amount + premium, "!amount");
         IERC20(asset).approve(address(POOL), amount + premium);
         totalLoans[initiator] += amount;
         return true;
