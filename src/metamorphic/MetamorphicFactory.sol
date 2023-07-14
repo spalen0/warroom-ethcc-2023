@@ -1,6 +1,7 @@
 // From: https://ethereum-blockchain-developer.com/110-upgrade-smart-contracts/12-metamorphosis-create2/#overwriting-smart-contracts
 pragma solidity ^0.8.13;
 
+// @todo don't call it MetamorphicFactory, change name to just Factory
 contract MetamorphicFactory {
     mapping(address => address) _implementations;
 
