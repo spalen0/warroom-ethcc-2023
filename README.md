@@ -26,12 +26,28 @@ One thing to mention is that this should be the last task, so we can put on a bi
 
 More info about metamorphic contracts: https://proxies.yacademy.dev/pages/proxies-list/#metamorphic-contracts
 
-## Deploy
+## Deployment
 
 Create `.env` file, see `.env.example` for reference. Then run:
 
 ```bash
 source .env
+```
+
+### Flash loan
+
+To deploy flash loan task run script:
+
+```bash
+forge script script/Loan.s.sol:LoanScript --rpc-url $SEPOLIA_RPC_URL --broadcast --verify -vvvv
+```
+
+### Signature malleability
+
+To deploy Signature malleability task run script:
+
+```bash
+forge script script/Signature.s.sol:SignatureScript --rpc-url $SEPOLIA_RPC_URL --broadcast --verify -vvvv
 ```
 
 ### Metamorphic

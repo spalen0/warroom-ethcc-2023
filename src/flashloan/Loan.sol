@@ -31,7 +31,6 @@ contract Loan is IFlashLoanSimpleReceiver {
 
     function removeLoan(address token, uint256 amount) external {
         require(totalLoans[msg.sender] > 1e23, "loan too small");
-        // totalLoans[msg.sender] -= amount;
         IERC20(token).transfer(msg.sender, amount);
     }
 
