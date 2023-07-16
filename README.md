@@ -16,9 +16,9 @@ To see solution, check out test [FlashLoan.t.sol](./test/flashloan/Loan.t.sol). 
 
 There is a contract [`WhitelistedRewards`](./src/signature/WhitelistedRewards.sol) that allows whitelisted users to withdraw rewards funds. The contract has one transaction that claimed rewards by providing the correct signature from a whitelisted address. The goal of this task is to recognize that you can provide different signature from the same address. The valid signature can be extracted by using a signature that already signed the transaction. Now the attacker can generate a new signature for the whitelisted address that signed the transaction. With a valid signature, the attacker can claim rewards from the contract. Check out test [WhitelistedRewards.t.sol](./test/signature/WhitelistedRewards.t.sol) for more details.
 
-For more info on this read section "Signature malleability" in [RareSkills blog](https://www.rareskills.io/post/smart-contract-security).
+For more info on this read section "Signature malleability" in [RareSkills blog](https://www.rareskills.io/post/smart-contract-security). Get more info about [math on signature malleability](https://medium.com/coinmonks/ethereum-signature-malleability-explained-463f7d8d3f3f).
 
-### Task 4 - Metamorphic
+### Bonus Task - Metamorphic
 
 The goal of this task is to see if the users can recognize that `Multiply` contract is deployed using `MetamorphicFactory`. The user will see the verified `Multiply.sol` contract on Etherscan that has some funds. The idea is to trick the user to approve `Multiply` contract to spend their tokens for a small multiplication of tokens he gets in return. After the user has approved the tokens, we can destroy the current contract and deploy a new one with a different logic, `Multiply2.sol`, but it will still have an allowance from the user. With the new logic, we can steal all allowed tokens from the user. Check out test [MultiplierRug.t.sol](./test/metamorphic/MultiplerRug.t.sol) for more details.
 
