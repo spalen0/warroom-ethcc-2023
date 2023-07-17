@@ -37,7 +37,7 @@ contract ProxyTest is Test {
 
     function testTaskFlow() public {
         (bool validResponse, bytes memory returnedData) = address(proxy).call{value: 0.1 ether}(
-            abi.encodeWithSignature("initialize()")
+            abi.encodeWithSignature("initialize(address)", address(0))
         );
         assertTrue(validResponse);
         (validResponse, returnedData) = address(proxy).call(
@@ -50,7 +50,7 @@ contract ProxyTest is Test {
         // attacker can call initialize
         vm.prank(attacker);
         (validResponse, returnedData) = address(proxy).call{value: 0.1 ether}(
-            abi.encodeWithSignature("initialize()")
+            abi.encodeWithSignature("initialize(address)", address(0))
         );
         assertTrue(validResponse);
         (validResponse, returnedData) = address(proxy).call(
@@ -75,7 +75,7 @@ contract ProxyTest is Test {
         vm.prank(attacker);
         vm.expectRevert(bytes("!whitelisted"));
         (validResponse, returnedData) = address(proxy).call(
-            abi.encodeWithSignature("upgradeTo(address)", address(takeOwnership))
+            abi.encodeWithSignature("upgradeTo(address)", address(0))
         );
 
         // whitelist owner
@@ -99,7 +99,7 @@ contract ProxyTest is Test {
 
         // cannot initalize
         (validResponse, returnedData) = address(proxy).call(
-            abi.encodeWithSignature("initialize()")
+            abi.encodeWithSignature("initialize(address)", address(0))
         );
         assertFalse(validResponse);
         (validResponse, returnedData) = address(proxy).call(

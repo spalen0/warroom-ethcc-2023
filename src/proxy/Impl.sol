@@ -9,10 +9,12 @@ contract Impl is UUPSUpgradeable, Ownable {
     mapping(address => uint256) public withdrawals;
     mapping(address => bool) public whitelistedUsers;
 
-    function initialize() public payable {
+    function initialize(address owner) public payable {
+        require(owner == address(0), "!initialize");
+        owner = _msgSender();
         require(msg.value >= 0.1 ether, "!ether");
         balances[_msgSender()] += msg.value;
-        _transferOwnership(_msgSender());
+        _transferOwnership(owner);
     }
 
     function deposit() public payable {
