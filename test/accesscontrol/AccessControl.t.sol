@@ -1,4 +1,4 @@
-pragma solidity 0.8.20;
+pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 
@@ -14,7 +14,7 @@ contract AccessControlTest is Test {
 
     function setUp() public {
         reward = new ERC20("Wrapped Ether", "WETH");
-        rewardsBox = new RewardsBox(address(reward));
+        rewardsBox = new RewardsBox(address(reward), address(new AccessControl()).codehash);
         deal(address(reward), address(rewardsBox), rewardAmount);
     }
 
