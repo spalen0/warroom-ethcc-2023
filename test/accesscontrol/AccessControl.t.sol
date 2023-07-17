@@ -1,4 +1,4 @@
-pragma solidity ^0.8.13;
+pragma solidity 0.8.20;
 
 import "forge-std/Test.sol";
 
@@ -14,7 +14,7 @@ contract AccessControlTest is Test {
 
     function setUp() public {
         reward = new ERC20("Wrapped Ether", "WETH");
-        rewardsBox = new RewardsBox(address(reward), address(new AccessControl()).codehash);
+        rewardsBox = new RewardsBox(address(reward), address(new AccessControl()));
         deal(address(reward), address(rewardsBox), rewardAmount);
     }
 
@@ -30,8 +30,7 @@ contract AccessControlTest is Test {
 
     function test_attackSuccess() public {
         Attack attack = new Attack();
-        address accessController = attack.pwn();
-        attack.finalize(accessController, address(rewardsBox), address(reward));
+        attack.pwn(address(rewardsBox), address(reward));
         require(reward.balanceOf(address(this)) == 1e18);
     }
 }
