@@ -32,7 +32,7 @@ For more info on this read section "Signature malleability" in [RareSkills blog]
 
 ### Task 4 - Access Control ?? points
 
-This task has two contracts, `RewardsBox` and `AccessControl`. `AccessControl` is a trick Access Controller that provides no way to add an owner. The preset owner is vitalik.eth and even the deployer has no function to add a new owner. `RewardsBox` is very simple and has a function `claim(address accessController, uint256 amount)` that checks the provided `accessController` to see that `msg.sender` is permissioned and if so, deals `amount` reward tokens.
+This task has two contracts, `RewardsBox` and `AccessControl`. `AccessControl` is a trick Access Controller that provides no way to add an owner. The preset owners are vitalik.eth and a randomly generated address. Even the deployer has no function to add a new owner. `RewardsBox` is very simple and has a function `claim(address accessController, uint256 amount)` that checks the provided `accessController` to see that `msg.sender` is permissioned and if so, deals `amount` reward tokens.
 
 `RewardsBox` enforces that you provide a correct `AccessControl` contract as the controller by checking the codehash of your provided controller against a codehash that is baked in on the `RewardsBox` init.
 
