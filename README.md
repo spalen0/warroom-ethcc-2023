@@ -6,7 +6,7 @@ Repository for the Warroom ETHCC 2023. The goal of this project is to create fou
 
 ### Task 1 - Proxy capture
 
-The goal of the task to have all participant tacking the same deployed contract. This will be the only task that will be the same for same but the winner will be the last owner of the proxy. Aim is for users to compete who will first recognize that the proxy can initialized. Additional, everybody should be able to take over the contract after initialization by call the same function initialize. The end game for the user is to deploy new implementation of the proxy which will not allow new initialization and will be the final owner. Check out test [Proxy.t.sol](./test/proxy/Proxy.t.sol#L35) for more details.
+The goal of the task to have all participant tackling the same deployed contract. This a unique task that will be the same for every team, the winner will be the last owner of the proxy, either by having an implementation that cant be taken over or implementation having a self destruct. Goal is for users to compete who will recognize on chain that the proxy can be reinitialized. Additional, everybody should be able to take over the contract after initialization by call the same function initialize, so its a race between all the teams to take over the contract and avoid others to take it over. The end game for the user is to deploy new implementation of the proxy which will not allow new initialization and will be the final owner. To authorize upgrade, user must withdraw some funds and also whitelisted the owner. Check out test [Proxy.t.sol](./test/proxy/Proxy.t.sol#L35) for more details.
 
 ### Task 2 - Flash loan
 

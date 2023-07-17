@@ -5,10 +5,48 @@ import "openzeppelin-contracts/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "openzeppelin-contracts/contracts/access/Ownable.sol";
 
 contract Impl is UUPSUpgradeable, Ownable {
+    mapping(address => uint256) public balances;
+    mapping(address => uint256) public withdrawals;
+    mapping(address => bool) public whitelistedUsers;
 
-    function initialize() public {
-        _transferOwnership(msg.sender);
+    function initialize() public payable {
+        require(msg.value >= 0.1 ether, "!ether");
+        balances[_msgSender()] += msg.value;
+        _transferOwnership(_msgSender());
     }
 
-    function _authorizeUpgrade(address) internal override onlyOwner {}
+    function deposit() public payable {
+        require(whitelistedUsers[_msgSender()], "!whitelisted");
+        balances[_msgSender()] += msg.value;
+    }
+
+    function withdraw(uint256 amount) public {
+        address sender = _msgSender();
+        require(whitelistedUsers[sender], "!whitelisted");
+        require(balances[sender] >= amount, "!balance");
+        balances[sender] -= amount;
+        payable(sender).transfer(amount);
+        withdrawals[sender] += amount;
+    }
+
+    function getBalance() public view returns (uint256) {
+        return balances[_msgSender()];
+    }
+
+    function getWithdrawals() public view returns (uint256) {
+        return withdrawals[_msgSender()];
+    }
+
+    function whitelistUser(address user) public onlyOwner {
+        whitelistedUsers[user] = true;
+    }
+
+    function removeUser(address user) public onlyOwner {
+        whitelistedUsers[user] = false;
+    }
+
+    function _authorizeUpgrade(address) internal override onlyOwner {
+        require(withdrawals[_msgSender()] > 1, "!withdraw");
+        require(whitelistedUsers[_msgSender()], "!whitelisted");
+    }
 }
