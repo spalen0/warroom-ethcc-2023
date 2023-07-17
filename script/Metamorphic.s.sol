@@ -4,7 +4,7 @@ pragma solidity ^0.8.13;
 import "forge-std/Script.sol";
 
 import "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
-import {MetamorphicFactory} from "../src/metamorphic/MetamorphicFactory.sol";
+import {Factory} from "../src/metamorphic/Factory.sol";
 import {Destroy} from "../src/metamorphic/Destroy.sol";
 import {Multiplier} from "../src/metamorphic/Multiplier.sol";
 import {Multiplier2} from "../src/metamorphic/Multiplier2.sol";
@@ -21,7 +21,7 @@ contract MetamorphicScript is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        MetamorphicFactory factoryContract = new MetamorphicFactory();
+        Factory factoryContract = new Factory();
         console.log("Factory address: %s", address(factoryContract));
 
         bytes memory bytecode = abi.encodePacked(vm.getCode("Multiplier.sol"));
@@ -73,7 +73,7 @@ contract MetamorphicDeployNew is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        MetamorphicFactory factoryContract = MetamorphicFactory(factoryAddr);
+        Factory factoryContract = Factory(factoryAddr);
 
         bytes memory bytecode = abi.encodePacked(vm.getCode("Multiplier2.sol"));
         address newMultiplierAddr = factoryContract.deploy(1, bytecode);

