@@ -30,6 +30,14 @@ There is a contract [`WhitelistedRewards`](./src/signature/WhitelistedRewards.so
 
 For more info on this read section "Signature malleability" in [RareSkills blog](https://www.rareskills.io/post/smart-contract-security). Get more info about [math on signature malleability](https://medium.com/coinmonks/ethereum-signature-malleability-explained-463f7d8d3f3f).
 
+### Task 4 - Access Control ?? points
+
+This task has two contracts, `RewardsBox` and `AccessControl`. `AccessControl` is a trick Access Controller that provides no way to add an owner. The preset owner is vitalik.eth and even the deployer has no function to add a new owner. `RewardsBox` is very simple and has a function `claim(address accessController, uint256 amount)` that checks the provided `accessController` to see that `msg.sender` is permissioned and if so, deals `amount` reward tokens.
+
+`RewardsBox` enforces that you provide a correct `AccessControl` contract as the controller by checking the codehash of your provided controller against a codehash that is baked in on the `RewardsBox` init.
+
+The trick here is that when a contract in deployed in the EVM, arbitrary code can be executed in the constructor that is not reflected later in the deployed contract code. So an attacker can deploy a new contract, in the constructor add themselves to the `owners` mapping, and then set the deployed code to a proper `AccessControl`. See the provided test for details.
+
 ### Bonus Task - Metamorphic 20 points
 
 The goal of this task is to see if the users can recognize that `Multiply` contract is deployed using `Factory`. The user will see the verified `Multiply.sol` contract on Etherscan that has some funds. The idea is to trick the user to approve `Multiply` contract to spend their tokens for a small multiplication of tokens he gets in return. After the user has approved the tokens, we can destroy the current contract and deploy a new one with a different logic, `Multiply2.sol`, but it will still have an allowance from the user. With the new logic, we can steal all allowed tokens from the user. Check out test [MultiplierRug.t.sol](./test/metamorphic/MultiplerRug.t.sol) for more details.
@@ -69,6 +77,15 @@ To deploy Signature malleability task run script:
 ```bash
 forge script script/Signature.s.sol:SignatureScript --rpc-url $SEPOLIA_RPC_URL --broadcast --verify -vvvv
 ```
+
+### Access Control
+
+To deploy Access Control task run script:
+
+```bash
+forge script script/AccessControl.s.sol:AccessControlScript --rpc-url $SEPOLIA_RPC_URL --broadcast --verify -vvvv
+```
+
 
 ### Metamorphic
 
