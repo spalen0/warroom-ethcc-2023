@@ -10,7 +10,7 @@ contract LoanScript is Script {
     // @todo set reward token address for all tasks
     address public rewardToken = 0xb16F35c0Ae2912430DAc15764477E179D9B9EbEa;
     // @todo define amount we want to send, only 1/3 will be claimed
-    uint256 public rewardAmount = 1e20;
+    uint256 public rewardAmount = 25 * 1e18;
 
     function setUp() public {}
 

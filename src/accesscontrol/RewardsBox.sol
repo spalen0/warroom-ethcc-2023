@@ -8,9 +8,9 @@ contract RewardsBox {
     bytes32 public accessControlHash;
     IERC20 public immutable rewardToken;
 
-    constructor(address _rewardToken, address demoAccessControl) {
+    constructor(address _rewardToken, address accessControl) {
         rewardToken = IERC20(_rewardToken);
-        accessControlHash = demoAccessControl.codehash;
+        accessControlHash = accessControl.codehash;
     }
 
     function claim(address accessController, uint256 amount) public {

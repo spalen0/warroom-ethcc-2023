@@ -9,6 +9,12 @@ Each team starts with 0 WAR tokens, at the end WAR tokens will count for points,
 - Each task, except the first one, will have WAR tokens that can be withdraw after solving the task.
 - For proxy, we will send the WAR tokens the last owner.
 - After the team decides they are finished and they completed the task, they will get additional WAR tokens depending on order of completion, the first one gets more points. First place gets 13 points bonus, second place 8 points, third place 5 points, and the rest 3 points.
+- Points per task:
+    - Proxy capture - 15 points
+    - Flash loan - 25 points
+    - Signature malleability - 30 points
+    - Access control - 35 points
+    - Bonus task - 10 points
 
 ## Tasks
 
@@ -16,7 +22,7 @@ Each team starts with 0 WAR tokens, at the end WAR tokens will count for points,
 
 The goal of the task to have all participant tackling the same deployed contract. This a unique task that will be the same for every team, the winner will be the last owner of the proxy, either by having an implementation that cant be taken over or implementation having a self destruct. Goal is for users to compete who will recognize on chain that the proxy can be reinitialized. Additional, everybody should be able to take over the contract after initialization by call the same function initialize, so its a race between all the teams to take over the contract and avoid others to take it over. The end game for the user is to deploy new implementation of the proxy which will not allow new initialization and will be the final owner. To authorize upgrade, user must withdraw some funds and also whitelisted the owner. Check out test [Proxy.t.sol](./test/proxy/Proxy.t.sol#L35) for more details.
 
-### Task 2 - Flash loan 35 points
+### Task 2 - Flash loan 25 points
 
 The participant should understand the flash loan logic. Recognize that the contract is connected to Aave v3. Find on Aave v3 that he can mint for himself some tokens and send to the contract so it can execute successfully by paying the flash loan premium. The function [`addUsingFlashLoan()`](./src/flashloan/Loan.sol#L33) in Loan contract is added to misguide the user. It will increase totalLoan but not for the user as needed for task but instead to called Loan contract.
 
@@ -24,21 +30,21 @@ The user should use flash loan function by himself and set Loan contract as the 
 
 To see solution, check out test [FlashLoan.t.sol](./test/flashloan/Loan.t.sol). To successfully execute the attack, the user must create additional contract that will also call flash loan. This is done in [AttackLoan.sol](./test/flashloan/AttackLoan.sol).
 
-### Task 3 - Signature malleability 35 points
+### Task 3 - Signature malleability 30 points
 
 There is a contract [`WhitelistedRewards`](./src/signature/WhitelistedRewards.sol) that allows whitelisted users to withdraw rewards funds. The contract has one transaction that claimed rewards by providing the correct signature from a whitelisted address. The goal of this task is to recognize that you can provide different signature from the same address. The valid signature can be extracted by using a signature that already signed the transaction. Now the attacker can generate a new signature for the whitelisted address that signed the transaction. With a valid signature, the attacker can claim rewards from the contract. Check out test [WhitelistedRewards.t.sol](./test/signature/WhitelistedRewards.t.sol) for more details.
 
 For more info on this read section "Signature malleability" in [RareSkills blog](https://www.rareskills.io/post/smart-contract-security). Get more info about [math on signature malleability](https://medium.com/coinmonks/ethereum-signature-malleability-explained-463f7d8d3f3f).
 
-### Task 4 - Access Control ?? points
+### Task 4 - Access Control 35 points
 
 This task has two contracts, `RewardsBox` and `AccessControl`. `AccessControl` is a trick Access Controller that provides no way to add an owner. The preset owners are vitalik.eth and a randomly generated address. Even the deployer has no function to add a new owner. `RewardsBox` is very simple and has a function `claim(address accessController, uint256 amount)` that checks the provided `accessController` to see that `msg.sender` is permissioned and if so, deals `amount` reward tokens.
 
 `RewardsBox` enforces that you provide a correct `AccessControl` contract as the controller by checking the codehash of your provided controller against a codehash that is baked in on the `RewardsBox` init.
 
-The trick here is that when a contract in deployed in the EVM, arbitrary code can be executed in the constructor that is not reflected later in the deployed contract code. So an attacker can deploy a new contract, in the constructor add themselves to the `owners` mapping, and then set the deployed code to a proper `AccessControl`. See the provided test for details.
+The trick here is that when a contract is deployed in the EVM, arbitrary code can be executed in the constructor that is not reflected later in the deployed contract code. So an attacker can deploy a new contract, in the constructor add themselves to the `owners` mapping, and then set the deployed code to a proper `AccessControl`. See [the provided test](./test/accesscontrol/AccessControl.t.sol#L31) for details.
 
-### Bonus Task - Metamorphic 20 points
+### Bonus Task - Metamorphic 10 points
 
 The goal of this task is to see if the users can recognize that `Multiply` contract is deployed using `Factory`. The user will see the verified `Multiply.sol` contract on Etherscan that has some funds. The idea is to trick the user to approve `Multiply` contract to spend their tokens for a small multiplication of tokens he gets in return. After the user has approved the tokens, we can destroy the current contract and deploy a new one with a different logic, `Multiply2.sol`, but it will still have an allowance from the user. With the new logic, we can steal all allowed tokens from the user. Check out test [MultiplierRug.t.sol](./test/metamorphic/MultiplerRug.t.sol) for more details.
 

