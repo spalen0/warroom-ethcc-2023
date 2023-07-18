@@ -5,7 +5,7 @@ import "forge-std/Script.sol";
 
 import {War} from "../src/War.sol";
 
-contract WarScript is Script {
+contract WarTokenScript is Script {
 
     function setUp() public {}
 
