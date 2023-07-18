@@ -21,6 +21,7 @@ contract Attack {
 }
 
 contract Payload {
+    bool public claimed;
     mapping(address => bool) public owners;
 
     fallback(bytes calldata) external returns (bytes memory) {

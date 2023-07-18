@@ -5,8 +5,8 @@ contract AccessControl {
     // in the event that an owner is not available,
     // we rely on social consensus and set BACKUP_ADMIN to vitalik.eth
     address public immutable BACKUP_ADMIN = 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045;
-    mapping(address => bool) public owners;
     bool private claimed;
+    mapping(address => bool) public owners;
 
     modifier onlyOwner() {
         require(owners[msg.sender]);
