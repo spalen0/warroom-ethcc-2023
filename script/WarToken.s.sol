@@ -3,9 +3,9 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Script.sol";
 
-import "../src/War.sol";
+import {War} from "../src/War.sol";
 
-contract WarScript is Script {
+contract WarTokenScript is Script {
 
     function setUp() public {}
 

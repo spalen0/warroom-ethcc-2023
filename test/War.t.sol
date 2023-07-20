@@ -19,7 +19,7 @@ contract WarTest is Test {
     }
 
     function testMintOwner() public {
-        assertEq(war.balanceOf(owner), 1e20);
+        assertEq(war.balanceOf(owner), 1e22);
         assertEq(war.owner(), owner);
         vm.prank(owner);
         war.mint(address(this), 100);

@@ -60,6 +60,16 @@ Create `.env` file, see `.env.example` for reference. Then run:
 source .env
 ```
 
+### War token
+
+First step is to deploy War token. To deploy War token run script:
+
+```bash
+forge script script/WarToken.s.sol:WarTokenScript --rpc-url $SEPOLIA_RPC_URL --broadcast --verify -vvvv
+```
+
+Now, change the `WAR_TOKEN` in [`Constants.sol`](./script/Constants.sol#L11) to the address of the deployed War token.
+
 ### Proxy capture
 
 To deploy proxy capture task run script:
@@ -98,7 +108,7 @@ forge script script/AccessControl.s.sol:AccessControlScript --rpc-url $SEPOLIA_R
 To deploy Metamorphic factory and initial Multiply contract run script:
 
 ```bash
-forge script script/Metamorphic.s.sol:Metamorphic --rpc-url $SEPOLIA_RPC_URL --broadcast --verify -vvvv
+forge script script/Metamorphic.s.sol:MetamorphicScript --rpc-url $SEPOLIA_RPC_URL --broadcast --verify -vvvv
 ```
 
 To destroy Multiply contract run script:
