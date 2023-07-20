@@ -18,7 +18,7 @@ contract LoanScript is Script {
 
         for (uint256 i; i < Constants.NUMBER_OF_TEAMS; i++) {
             Loan loan = new Loan(Constants.WAR_TOKEN);
-            console.log("Loan address x%d: %s", i, address(loan));
+            console.log("Loan address #%d: %s", i, address(loan));
             IERC20(Constants.WAR_TOKEN).transfer(address(loan), Constants.TASK_2);
         }
 

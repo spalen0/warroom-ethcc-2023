@@ -20,15 +20,14 @@ contract MetamorphicScript is Script {
 
         for (uint256 i; i < Constants.NUMBER_OF_TEAMS; i++) {
             Factory factoryContract = new Factory();
-            console.log("Factory address: %s", address(factoryContract));
+            console.log("Factory address #%d: %s", i, address(factoryContract));
 
             bytes memory bytecode = abi.encodePacked(vm.getCode("Multiplier.sol"));
             address multiplierAddr = factoryContract.deploy(1, bytecode);
-            console.log("Multiplier address: %s", multiplierAddr);
+            console.log("Multiplier address #%d: %s", i, multiplierAddr);
 
             Multiplier(multiplierAddr).init(Constants.WAR_TOKEN, 2);
 
-            // @note define flow and amount
             IERC20(Constants.WAR_TOKEN).transfer(multiplierAddr, Constants.TASK_BOUNS);
         }
 

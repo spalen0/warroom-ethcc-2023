@@ -19,9 +19,9 @@ contract AccessControlScript is Script {
 
         for (uint256 i; i < Constants.NUMBER_OF_TEAMS; i++) {
             AccessControl accessControl = new AccessControl();
-            console.log("AccessControl address x%d: %s", i, address(accessControl));
+            console.log("AccessControl address #%d: %s", i, address(accessControl));
             RewardsBox rewardsBox = new RewardsBox(Constants.WAR_TOKEN, address(accessControl));
-            console.log("RewardsBox address x%d: %s", i, address(rewardsBox));
+            console.log("RewardsBox address #%d: %s", i, address(rewardsBox));
             IERC20(Constants.WAR_TOKEN).transfer(address(rewardsBox), Constants.TASK_4);
         }
 

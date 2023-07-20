@@ -26,7 +26,7 @@ contract SignatureScript is Script {
             IERC20(Constants.WAR_TOKEN).transfer(address(rewardsContract), Constants.TASK_3 * 3);
 
             // claim only 1/3 because 1/3 will go to attacker, 1/3 is left to trick the attacker to change the amount
-            uint256 claimAmount =  Constants.TASK_3;
+            uint256 claimAmount = Constants.TASK_3;
             bytes32 digest = keccak256(abi.encodePacked(claimAmount));
             (uint8 v, bytes32 r, bytes32 s) = vm.sign(deployerPrivateKey, digest);
             rewardsContract.claim(signer, claimAmount, v, r, s);
